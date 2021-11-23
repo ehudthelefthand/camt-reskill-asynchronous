@@ -8,22 +8,22 @@
 </head>
 <body>
     <script>
-const p = new Promise((resolve, reject) => {
-    const go = confirm('เคร อาทิตย์หน้าไปกินหมูกระทะกัน')
-    if (go) {
-        resolve('ไปกัน')
-    } else {
-        reject('โดนเท')
-    }
-})
+        const p = new Promise((resolve, reject) => {
+            const go = confirm('เคร อาทิตย์หน้าไปกินหมูกระทะกัน')
+            if (go) {
+                resolve('ไปกัน')
+            } else {
+                reject('โดนเท')
+            }
+        })
 
-p.then((message) => {
-    console.log(message)
-}).catch((message) => {
-    console.log(message)
-})
+        p.then((message) => {
+            console.log(message)
+        }).catch((message) => {
+            console.log(message)
+        })
 
-console.log('มา หรือ ไม่มา...')
+        console.log('มา หรือ ไม่มา...')
     </script>
 </body>
 </html>
