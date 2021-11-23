@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <title>The Post</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-light bg-light">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">The Post</span>
+        </div>
+    </nav>
+    <div id="posts" class="container-lg d-flex justify-content-center flex-column mt-4 align-items-start"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+        integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
+        crossorigin="anonymous"></script>
+    <div class="modal fade" tabindex="-1" id="comments">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Modal body text goes here.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const $posts = $('#posts')
+        const $comments = $('#comments')
+        const commentModal = new bootstrap.Modal($comments.get(0))
+
+        $.get('https://jsonplaceholder.typicode.com/posts', function (data) {
+            let result = ''
+            for (let currentPost = 0; currentPost < data.length; currentPost++) {
+                const post = data[currentPost]
+                result += `
+                    <div class="card mt-4">
+                        <div class="card-body">
+                            <h5 class="card-title">${post.title}</h5>
+                            <p class="card-text">${post.body}.</p>
+                            <button data-post-id="${post.id}" data-post-title="${post.title}" class="btn btn-primary">View Comment</button>
+                        </div>
+                    </div>
+                `
+            }
+            
+            $posts.html(result)
+
+            $('button[data-post-id]').on('click', function() {
+                const postId = $(this).attr('data-post-id')
+                const postTitle = $(this).attr('data-post-title')
+                $.get(`https://jsonplaceholder.typicode.com/posts/${postId}/comments`, function (data) {
+                    let result = ''
+                    for (let currentComment = 0; currentComment < data.length; currentComment++) {
+                        const comment = data[currentComment]
+                        result += `
+                            <div class="card mt-4">
+                                <div class="card-body">
+                                    <h5 class="card-title">${comment.name}</h5>
+                                    <h6 class="card-subtitle mb-2 text-muted">${comment.email}</h6>
+                                    <p class="card-text">${comment.body}.</p>
+                                </div>
+                            </div>
+                        `
+                    }
+                    $comments.find('.modal-title').text(`Comment of ${postTitle}`)
+                    $comments.find('.modal-body').html(result)
+                    commentModal.toggle()
+                })
+            })
+        })
+    </script>
+</body>
+
+</html>
